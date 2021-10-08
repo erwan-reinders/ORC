@@ -1,5 +1,7 @@
-package main.java;
+//package main.java;
 
-public class Agent {
+public abstract class Agent {
+    /*Classe abstraite symbolisant un Agent*/
+
     public Agent(){}
 }
