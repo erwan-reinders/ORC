@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.util.ArrayList;
+
 import static java.lang.Math.*;
 
 public class Orc extends Agent implements Drawable{
@@ -14,7 +16,7 @@ public class Orc extends Agent implements Drawable{
 	private double size;
 
 	public Orc(ArrayList<Action> actions, double health, double maxHealth, double x, double y, double size) {
-                super(actions);
+		super(actions);
 		this.health = health;
 		this.maxHealth = maxHealth;
 		this.x = x;
