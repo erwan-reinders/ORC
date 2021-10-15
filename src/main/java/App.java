@@ -11,7 +11,7 @@ public class App extends JFrame{
 	private Ordonnanceur o;
 
 	private void initApp() {
-		o = new Ordonnanceur(300, 300, 2);
+		o = new Ordonnanceur(300, 300, 10);
 		tX = 50;
 		tY = 50;
 	}
@@ -47,7 +47,7 @@ public class App extends JFrame{
 
 		while (true) {
 			a.update();
-			Thread.sleep(10);
+			Thread.sleep(100);
 		}
 	}
 }

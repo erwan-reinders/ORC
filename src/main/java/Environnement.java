@@ -15,4 +15,12 @@ public class Environnement implements Drawable{
         g2d.setColor(new Color(0, 0, 0));
         g2d.drawRect(0, 0, width, height);
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }
