@@ -20,7 +20,7 @@ public class App extends JFrame{
 	public void paint(Graphics g) {
 	    Graphics2D g2d = (Graphics2D) g;
 	    //TODO On dessine tout
-		//o.draw(g2d);
+		o.draw(g2d);
 	}
 	
 	public static void main(String[] args) {
