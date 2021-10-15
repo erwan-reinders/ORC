@@ -50,13 +50,15 @@ public class Ordonnanceur implements Drawable{
 
             //o.prendreDesision(env);
             o.loseHealth(1);
-            /*
+
             if (!o.isAlive()) {
                 orcs.remove(o);
             }
-            */
-
         }
+    }
+
+    public boolean isFinished() {
+        return orcs.size() < 2;
     }
 
 
@@ -65,6 +67,9 @@ public class Ordonnanceur implements Drawable{
         for (Orc o :
                 orcs) {
             o.draw(g2d);
+        }
+        if (isFinished()) {
+            g2d.drawString("Finnished!", (int)env.getWidth(), 10);
         }
     }
 }
