@@ -10,8 +10,6 @@ public abstract class Agent {
         this.actions = actions;
     }
     
-    
-    
     public void addAction(Action action){
         if(!actions.contains(action)){
             actions.add(action);
