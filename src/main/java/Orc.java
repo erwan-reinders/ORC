@@ -13,7 +13,8 @@ public class Orc extends Agent implements Drawable{
 	private double y;
 	private double size;
 
-	public Orc(double health, double maxHealth, double x, double y, double size) {
+	public Orc(ArrayList<Action> actions, double health, double maxHealth, double x, double y, double size) {
+                super(actions);
 		this.health = health;
 		this.maxHealth = maxHealth;
 		this.x = x;
