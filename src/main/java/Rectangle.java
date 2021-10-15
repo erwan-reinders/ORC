@@ -5,12 +5,12 @@ public class Rectangle extends Forme {
     private double x_coinBD;
     private double y_coinBD;
 
-    public Rectangle(double x_coinHG, double y_coinHG, double x_coinBD, double y_coinBD) {
-        super(x_coinBD - x_coinHG, y_coinHG - y_coinBD);
-        this.x_coinHG = x_coinHG;
-        this.y_coinHG = y_coinHG;
-        this.x_coinBD = x_coinBD;
-        this.y_coinBD = y_coinBD;
+    public Rectangle(double x, double y, double width, double height) {
+        super(width, height);
+        this.x_coinHG = x;
+        this.y_coinHG = y;
+        this.x_coinBD = x + width;
+        this.y_coinBD = y + height;
     }
 
     public boolean estContennu(double x, double y){

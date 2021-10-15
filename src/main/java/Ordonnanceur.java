@@ -12,7 +12,7 @@ public class Ordonnanceur implements Drawable{
     private ArrayList<Orc> orcs;
 
     public Ordonnanceur(int width, int height, int nbOrcs) {
-        env = new Environnement(width, height);
+        env = new Environnement(new Rectangle(0, 0, width, height));
         orcs = new ArrayList<Orc>();
 
         addOrcCircle(nbOrcs/2);

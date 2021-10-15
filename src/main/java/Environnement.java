@@ -23,11 +23,11 @@ public class Environnement implements Drawable{
         g2d.drawRect(0, 0, (int) this.arene.getWidth(),(int) this.arene.getHeight());
     }
 
-    public int getWidth() {
-        return width;
+    public double getWidth() {
+        return arene.getWidth();
     }
 
-    public int getHeight() {
-        return height;
+    public double getHeight() {
+        return arene.getHeight();
     }
 }
