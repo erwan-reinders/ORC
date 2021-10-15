@@ -16,7 +16,7 @@ public class Action_Avancer implements Action<Orc> {
 
     public void executer(Orc o){
         //Ici, on doit opérer un déplacement
-
+        o.move(posDepX, posDepY);
     }
 
     public boolean estExecutable(Orc o){
