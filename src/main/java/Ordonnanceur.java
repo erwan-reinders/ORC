@@ -52,7 +52,7 @@ public class Ordonnanceur implements Drawable{
             o.loseHealth(1);
 
             if (!o.isAlive()) {
-                orcs.remove(o);
+                it.remove();
             }
         }
     }
@@ -69,7 +69,8 @@ public class Ordonnanceur implements Drawable{
             o.draw(g2d);
         }
         if (isFinished()) {
-            g2d.drawString("Finnished!", (int)env.getWidth(), 10);
+            g2d.setColor(new Color(100, 100, 100));
+            g2d.drawString("Finnished!", (int)(env.getWidth()*0.5-10), 50);
         }
     }
 }
