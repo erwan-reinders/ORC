@@ -10,10 +10,10 @@ public abstract class Agent {
         this.actions = actions;
     }
     
-    public void addAction(Action action){
-        if(!actions.contains(action)){
-            actions.add(action);
-        }
+    
+    
+    public void addActions(ArrayList<Action> actions){
+        this.actions.addAll(actions);
     }
     
     public void removeAction(Action action){
