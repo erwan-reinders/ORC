@@ -1,28 +1,41 @@
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class Agent {
     /*Classe abstraite symbolisant un Agent*/
-    private ArrayList<Action> actions;
+    private Map<String, Action> actions;
 
 
-    public Agent(ArrayList<Action> actions){
-        this.actions = actions;
+    public Agent(){
+        this.actions = new LinkedHashMap<String, Action>();
     }
-    
-    
-    
-    public void addActions(ArrayList<Action> actions){
-        this.actions.addAll(actions);
+
+    protected abstract Action prendreDesision(Environnement env);
+
+    public void executerDesision(Environnement env) {
+        prendreDesision(env).executer(this);
     }
-    
-    public void removeAction(Action action){
-        actions.remove(action);
+
+    public void addActions(Map<String, Action> actions){
+        this.actions.putAll(actions);
     }
-    
-    public ArrayList<Action> getActions() {
+
+    public void addAction(String name, Action action){
+        this.actions.put(name, action);
+    }
+
+    public void removeAction(String name){
+        actions.remove(name);
+    }
+
+    public Action getAction(String name) {
+        return actions.get(name);
+    }
+
+    public Map<String, Action> getActions() {
         return actions;
     }
-    
 
 }

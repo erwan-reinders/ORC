@@ -30,4 +30,8 @@ public class Environnement implements Drawable{
     public double getHeight() {
         return arene.getHeight();
     }
+
+    public boolean isIn(double x, double y) {
+        return arene.estContennu(x, y);
+    }
 }

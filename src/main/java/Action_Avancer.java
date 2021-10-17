@@ -8,6 +8,10 @@ public class Action_Avancer implements Action<Orc> {
     private double posDepY;
 
     //Constructeur
+    public Action_Avancer() {
+
+    }
+
     public Action_Avancer(Environnement env, double x, double y){
         this.env = env;
         posDepX = x;
@@ -21,5 +25,17 @@ public class Action_Avancer implements Action<Orc> {
 
     public boolean estExecutable(Orc o){
         return false;
+    }
+
+    public void setEnv(Environnement env) {
+        this.env = env;
+    }
+
+    public void setPosDepX(double posDepX) {
+        this.posDepX = posDepX;
+    }
+
+    public void setPosDepY(double posDepY) {
+        this.posDepY = posDepY;
     }
 }

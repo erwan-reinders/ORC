@@ -7,7 +7,7 @@ public class Orc extends Agent implements Drawable{
     //Idée : un orc est un agent de notre simulation, et va donc, en plus de posséder des caractéristiques
     // d'un agent, va également posséder des statistiques propres et qui vont varier d'un agent à un autre
     
-        private double maxHealth;
+	private double maxHealth;
 	private double health;
 	
 	private double x;
@@ -15,30 +15,54 @@ public class Orc extends Agent implements Drawable{
 	private double size;
 
 	public Orc(double health, double maxHealth, double x, double y, double size) {
-                super(new ArrayList<Action>());
+		super();
 		this.health = health;
 		this.maxHealth = maxHealth;
 		this.x = x;
 		this.y = y;
 		this.size = size;
+
+		initActions();
+	}
+
+	private void initActions() {
+		addAction("avancer", new Action_Avancer());
+	}
+
+	@Override
+	protected Action<Orc> prendreDesision(Environnement env) {
+		Action_Avancer choix = (Action_Avancer) getAction("avancer");
+		choix.setEnv(env);
+		double cX, cY;
+		cX = Math.random()*2.0-1.0;
+		cY = Math.random()*2.0-1.0;
+		if (env.isIn(x+cX, y+cY)) {
+			choix.setPosDepX(cX);
+			choix.setPosDepY(cY);
+		}
+		else {
+			choix.setPosDepX(0.0);
+			choix.setPosDepY(0.0);
+		}
+		return choix;
 	}
 
 	public void loseHealth(int amount) {
                 health = max(health - amount, 0);
 	}
         
-        public void addHealth(int amount) {
-                health = min(maxHealth, health + amount);
-        }
-        
-        public boolean isAlive() {
-            return (health > 0);
-        }
-        
-        public void move(double vx, double vy) {
-            x += vx;
-            y += vy; 
-        }
+	public void addHealth(int amount) {
+			health = min(maxHealth, health + amount);
+	}
+
+	public boolean isAlive() {
+		return (health > 0);
+	}
+
+	public void move(double vx, double vy) {
+		x += vx;
+		y += vy;
+	}
 
 	public void draw(Graphics2D g2d) {
 		g2d.setColor(new Color(80, 100, 30));

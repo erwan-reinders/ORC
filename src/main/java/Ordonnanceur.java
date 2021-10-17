@@ -48,8 +48,7 @@ public class Ordonnanceur implements Drawable{
         while (it.hasNext()) {
             o = it.next();
 
-            //o.prendreDesision(env);
-            o.loseHealth(1);
+            o.executerDesision(env);
 
             if (!o.isAlive()) {
                 it.remove();

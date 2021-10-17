@@ -47,7 +47,7 @@ public class App extends JFrame{
 
 		while (true) {
 			a.update();
-			Thread.sleep(30);
+			Thread.sleep(32);
 		}
 	}
 }

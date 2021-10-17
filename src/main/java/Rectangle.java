@@ -14,6 +14,6 @@ public class Rectangle extends Forme {
     }
 
     public boolean estContennu(double x, double y){
-        return (x<=x_coinBD && x>=x_coinHG) && (y >= y_coinBD && y <= y_coinHG);
+        return (x<=x_coinBD && x>=x_coinHG) && (y <= y_coinBD && y >= y_coinHG);
     }
 }
