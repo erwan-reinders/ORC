@@ -37,7 +37,27 @@ public class Orc extends Agent implements Drawable{
 		if (closest == null) {
 			return null;
 		}
-		if (getSqrDistanceTo(closest) <= 4 * size * size) {
+		if (health < maxHealth*0.5) {
+			Action_Avancer choix = (Action_Avancer) getAction("avancer");
+			choix.setEnv(env);
+			double cX, cY;
+			cX = this.x - closest.x;
+			cY = this.y - closest.y;
+
+			double norm = Math.sqrt(getSqrDistanceTo(closest));
+			cX /= norm;
+			cY /= norm;
+
+			if (env.isIn(x + cX, y + cY)) {
+				choix.setPosDepX(cX);
+				choix.setPosDepY(cY);
+			} else {
+				choix.setPosDepX(0.0);
+				choix.setPosDepY(0.0);
+			}
+			choixFinal = choix;
+		}
+		else if (getSqrDistanceTo(closest) <= 4 * size * size) {
 			Action_Attaquer choix = (Action_Attaquer) getAction("attaquer");
 			choix.setEnv(env);
 			choix.setTarget(closest);

@@ -11,7 +11,7 @@ public class App extends JFrame{
 	private Ordonnanceur o;
 
 	private void initApp() {
-		o = new Ordonnanceur(300, 300, 20);
+		o = new Ordonnanceur(300, 300, 5);
 		tX = 50;
 		tY = 50;
 	}
