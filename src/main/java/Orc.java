@@ -1,6 +1,5 @@
 import java.awt.*;
 import static java.lang.Math.*;
-import java.util.ArrayList;
 
 public class Orc extends Agent implements Drawable{
     /*Classe abstraite symbolisant un Orc*/
@@ -27,32 +26,56 @@ public class Orc extends Agent implements Drawable{
 
 	private void initActions() {
 		addAction("avancer", new Action_Avancer());
+		addAction("attaquer", new Action_Attaquer());
 	}
 
 	@Override
 	protected Action<Orc> prendreDesision(Environnement env) {
-		Action_Avancer choix = (Action_Avancer) getAction("avancer");
-		choix.setEnv(env);
-		double cX, cY;
-		cX = Math.random()*2.0-1.0;
-		cY = Math.random()*2.0-1.0;
-		if (env.isIn(x+cX, y+cY)) {
-			choix.setPosDepX(cX);
-			choix.setPosDepY(cY);
+		Action<Orc> choixFinal = null;
+
+		Orc closest = env.getClosestOrc(this);
+		if (closest == null) {
+			return null;
 		}
-		else {
-			choix.setPosDepX(0.0);
-			choix.setPosDepY(0.0);
+		if (getSqrDistanceTo(closest) <= 4 * size * size) {
+			Action_Attaquer choix = (Action_Attaquer) getAction("attaquer");
+			choix.setEnv(env);
+			choix.setTarget(closest);
+			choixFinal = choix;
+		} else {
+			Action_Avancer choix = (Action_Avancer) getAction("avancer");
+			choix.setEnv(env);
+			double cX, cY;
+			cX = closest.x - this.x;
+			cY = closest.y - this.y;
+			if (isIn(closest)) {
+				cX = -cX;
+				cY = -cY;
+			}
+			else {
+				double norm = Math.sqrt(getSqrDistanceTo(closest));
+				cX /= norm;
+				cY /= norm;
+			}
+			if (env.isIn(x + cX, y + cY)) {
+				choix.setPosDepX(cX);
+				choix.setPosDepY(cY);
+			} else {
+				choix.setPosDepX(0.0);
+				choix.setPosDepY(0.0);
+			}
+			choixFinal = choix;
 		}
-		return choix;
+
+		return choixFinal;
 	}
 
-	public void loseHealth(int amount) {
-                health = max(health - amount, 0);
+	public void loseHealth(double amount) {
+		health = max(health - amount, 0);
 	}
         
-	public void addHealth(int amount) {
-			health = min(maxHealth, health + amount);
+	public void addHealth(double amount) {
+		health = min(maxHealth, health + amount);
 	}
 
 	public boolean isAlive() {
@@ -62,6 +85,18 @@ public class Orc extends Agent implements Drawable{
 	public void move(double vx, double vy) {
 		x += vx;
 		y += vy;
+	}
+
+	public double getSqrDistanceTo(Orc o) {
+		double dx = o.x - this.x;
+		double dy = o.y - this.y;
+		return (dx*dx + dy*dy);
+	}
+
+	public boolean isIn(Orc o) {
+		double dx = o.x - this.x;
+		double dy = o.y - this.y;
+		return (dx*dx + dy*dy) <= this.size*this.size;
 	}
 
 	public void draw(Graphics2D g2d) {

@@ -6,12 +6,23 @@ public class Environnement implements Drawable{
     /*Classe symbolisant un Environnement*/
     //Ici, notre environnement se modélise par un espace 2D composant les limites de notre arene de combat
 
-    Forme arene;
-    List<Forme> obstacles;
+    private Forme arene;
+    private List<Forme> obstacles;
+
+    private ArrayList<Orc> orcs;
 
     public Environnement(Forme arene) {
         this.arene = arene;
+        this.orcs = new ArrayList<Orc>();
         obstacles = new ArrayList<Forme>();
+    }
+
+    public void addOrc(Orc o) {
+        orcs.add(o);
+    }
+
+    public ArrayList<Orc> getOrcs() {
+        return orcs;
     }
 
     public void ajouterObstacles(Forme ... obs){
@@ -33,5 +44,31 @@ public class Environnement implements Drawable{
 
     public boolean isIn(double x, double y) {
         return arene.estContennu(x, y);
+    }
+
+    public Orc getClosestOrc(Orc o) {
+        Orc minO = null;
+        double minDist = arene.getWidth()+arene.getHeight();
+        minDist *= minDist;
+        double distance;
+        for (Orc oi :
+                orcs) {
+            distance = o.getSqrDistanceTo(oi);
+            if (distance < minDist && oi != o) {
+                minO = oi;
+                minDist = distance;
+            }
+        }
+        return minO;
+    }
+    
+    public Orc collidingOrc(Orc o) {
+        for (Orc oi :
+                orcs) {
+            if (o.isIn(oi) && o != oi) {
+                return oi;
+            }
+        }
+        return null;
     }
 }

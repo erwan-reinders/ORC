@@ -24,7 +24,7 @@ public class Action_Avancer implements Action<Orc> {
     }
 
     public boolean estExecutable(Orc o){
-        return false;
+        return true;
     }
 
     public void setEnv(Environnement env) {

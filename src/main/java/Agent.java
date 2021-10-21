@@ -15,7 +15,10 @@ public abstract class Agent {
     protected abstract Action prendreDesision(Environnement env);
 
     public void executerDesision(Environnement env) {
-        prendreDesision(env).executer(this);
+        Action choix = prendreDesision(env);
+        if (choix != null && choix.estExecutable(this)) {
+            choix.executer(this);
+        }
     }
 
     public void addActions(Map<String, Action> actions){
