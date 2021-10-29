@@ -45,7 +45,7 @@ public class Orc implements Agent, Drawable{
 		while(ite.hasNext()){
 			Action<Orc> pa = ite.next();
 			if(pa.estExecutable(this)){
-				if((action_choix == null) || (action_choix != null && pa.getCout() < action_choix.getCout())){
+				if((action_choix == null) || (pa.getCout() < action_choix.getCout())){
 					action_choix = pa;
 				}
 			}

@@ -8,5 +8,5 @@ public interface Action<T extends Agent>{
     boolean estExecutable(T a);
 
     //Fonction qui modélise le cout d'une action (heuristique)
-    int getCout();
+    double getCout();
 }

@@ -27,8 +27,8 @@ public class Action_Attaquer implements Action<Orc> {
         return false;
     }
 
-    public int getCout(){
-        return 2;
+    public double getCout(){
+        return .9;
     }
 
     public void setEnv(Environnement env) {

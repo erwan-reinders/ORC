@@ -28,8 +28,8 @@ public class Action_Avancer implements Action<Orc> {
         return env.isIn(x,y);
     }
 
-    public int getCout(){
-        return 1;
+    public double getCout(){
+        return .1;
     }
 
     public void setEnv(Environnement env) {
