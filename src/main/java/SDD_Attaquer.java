@@ -11,68 +11,59 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
     }
 
     public Vec2 getProchainePosition(){
-
         /*if(!env.getArene().estContennu(x,y)) return false;
         for (Forme f: env.getObstacles()) {
             if(f.estContennu(x, y)) return false;
         }
         return true;
-
-
-        //REFACTORING
+*/
+        Vec2 newPos = new Vec2();
         Orc closest = this.env.getClosestOrc(orc);
 
         if (closest == null) {
-            return false;
+            return newPos;
         }
-        if (!o.isAffraid()) {
+        if (!orc.isAffraid()) {
             double cX, cY;
-            cX = o.getX() - closest.getX();
-            cY = o.getY() - closest.getY();
+            cX = orc.getX() - closest.getX();
+            cY = orc.getY() - closest.getY();
 
-            double norm = Math.sqrt(o.getSqrDistanceTo(closest));
+            double norm = Math.sqrt(orc.getSqrDistanceTo(closest));
             cX /= norm;
             cY /= norm;
 
-            if (env.isIn(x + cX, y + cY)) {
-                this.posDepX = cX;
-                this.posDepY = cY;
-            } else {
-                this.posDepX = .0;
-                this.posDepY = .0;
+            if (env.isIn(orc.getX() + cX, orc.getY() + cY)) {
+                newPos.x = cX;
+                newPos.y = cY;
             }
-            return true;
-        }
-        else if (getSqrDistanceTo(closest) <= 4 * size * size) {
+        }/*
+        else if (orc.estAPorte(closest)) {
             Action_Attaquer choix = (Action_Attaquer) getAction("attaquer");
             choix.setEnv(env);
             choix.setTarget(closest);
             choixFinal = choix;
-        } else {
-            Action_Avancer choix = (Action_Avancer) getAction("avancer");
-            choix.setEnv(env);
+        }*/ else {
+            /*Action_Avancer choix = (Action_Avancer) getAction("avancer");
+            choix.setEnv(env);*/
             double cX, cY;
-            cX = closest.x - this.x;
-            cY = closest.y - this.y;
-            if (isIn(closest)) {
+            cX = closest.getX() - orc.getX();
+            cY = closest.getY() - orc.getY();
+            if (orc.isIn(closest)) {
                 cX = -cX;
                 cY = -cY;
             }
             else {
-                double norm = Math.sqrt(getSqrDistanceTo(closest));
+                double norm = Math.sqrt(orc.getSqrDistanceTo(closest));
                 cX /= norm;
                 cY /= norm;
             }
-            if (env.isIn(x + cX, y + cY)) {
-                choix.setPosDepX(cX);
-                choix.setPosDepY(cY);
-            } else {
-                choix.setPosDepX(0.0);
-                choix.setPosDepY(0.0);
+            if (env.isIn(orc.getX() + cX, orc.getY() + cY)) {
+                newPos.x = cX;
+                newPos.y = cY;
             }
-            choixFinal = choix;
-        }*/
-
-        return null;
+        }
+        return newPos;
     }
+
+
 }
