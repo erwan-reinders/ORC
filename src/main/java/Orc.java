@@ -12,6 +12,7 @@ public class Orc implements Agent, Drawable{
 
 	protected List<Action<Orc>> actions;
 	private Action<Orc> action_choix;
+	private List<StrategieDeDeplacement> stratDeplacement;
 
 	private double maxHealth;
 	private double health;
@@ -21,6 +22,7 @@ public class Orc implements Agent, Drawable{
 	private double size;
 
 	public Orc(double health, double maxHealth, double x, double y, double size) {
+		stratDeplacement = new ArrayList<StrategieDeDeplacement>();
 		actions = new ArrayList<Action<Orc>>();
 		action_choix = null;
 
@@ -67,7 +69,7 @@ public class Orc implements Agent, Drawable{
 	public void move(double vx, double vy) {
             x += vx;
             y += vy;
-        }
+	}
 
 	//Pertinant de la mettre ici ?
 	public double getSqrDistanceTo(Orc o) {
@@ -103,6 +105,10 @@ public class Orc implements Agent, Drawable{
 
 	public double getY() {
 		return y;
+	}
+
+	public void ajouterStrategie(StrategieDeDeplacement str){
+		stratDeplacement.add(str);
 	}
 
 	//PREDICATS
