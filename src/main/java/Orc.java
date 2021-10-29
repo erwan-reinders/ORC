@@ -3,6 +3,7 @@ import static java.lang.Math.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import MathClass.Vec2;
 
 public class Orc implements Agent, Drawable{
     /*Classe abstraite symbolisant un Orc*/
@@ -12,7 +13,7 @@ public class Orc implements Agent, Drawable{
 
 	protected List<Action<Orc>> actions;
 	private Action<Orc> action_choix;
-	private List<StrategieDeDeplacement> stratDeplacement;
+	private StrategieDeDeplacement SDD;
 
 	private double maxHealth;
 	private double health;
@@ -25,7 +26,7 @@ public class Orc implements Agent, Drawable{
 	private int id;
 
 	public Orc(double health, double maxHealth, double x, double y, double size) {
-		stratDeplacement = new ArrayList<StrategieDeDeplacement>();
+		SDD = new SDD_Attaquer(this);
 		actions = new ArrayList<Action<Orc>>();
 		action_choix = null;
 
@@ -37,6 +38,14 @@ public class Orc implements Agent, Drawable{
 		
 		id = cpt;
 		cpt++;
+
+		remplirActions();
+	}
+	/**============ INITIALISATION ============**/
+	//Méthode permettant à un Agent de renseigner ses actions
+	private void remplirActions(){
+		this.actions.add( new Action_Avancer());
+		this.actions.add( new Action_Attaquer());
 	}
 
 	/**============ ACTIONS DE AGENT ORC ============**/
@@ -50,11 +59,6 @@ public class Orc implements Agent, Drawable{
 				}
 			}
 		}
-	}
-
-	public void remplirActions(){
-		this.actions.add( new Action_Avancer());
-		this.actions.add( new Action_Attaquer());
 	}
 
 	public void executerDesision(){
@@ -72,9 +76,9 @@ public class Orc implements Agent, Drawable{
 		health = min(maxHealth, health + amount);
 	}
 
-	public void move(double vx, double vy) {
-            x += vx;
-            y += vy;
+	public void move(Vec2 v) {
+            x += v.x;
+            y += v.y;
 	}
 
 	//Pertinant de la mettre ici ?
@@ -85,7 +89,7 @@ public class Orc implements Agent, Drawable{
 	}
 
 
-	//Fonctions de dessin
+	//Fonctions de DESSIN
 	public boolean isIn(Orc o) {
 		double dx = o.x - this.x;
 		double dy = o.y - this.y;
@@ -117,10 +121,6 @@ public class Orc implements Agent, Drawable{
 
 	public double getY() {
 		return y;
-	}
-
-	public void ajouterStrategie(StrategieDeDeplacement str){
-		stratDeplacement.add(str);
 	}
 
 	//PREDICATS

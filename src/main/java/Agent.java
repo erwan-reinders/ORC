@@ -7,8 +7,4 @@ public interface Agent {
 
     //Fonction permettant d'exécuter l'action
     public abstract void executerDesision();
-
-    //Méthode permettant à un Agent de renseigner ses actions (initialisation)
-    public abstract void remplirActions();
-
 }

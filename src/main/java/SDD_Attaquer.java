@@ -2,15 +2,13 @@ import MathClass.Vec2;
 
 public class SDD_Attaquer implements StrategieDeDeplacement {
     /*Classe modélisant une stratégie de déplacement basée sur l'attaque d'un adversaire*/
-    private Environnement env;
     private Orc orc;
 
-    public SDD_Attaquer(Environnement env, Orc orc){
-        this.env= env;
+    public SDD_Attaquer(Orc orc){
         this.orc = orc;
     }
 
-    public Vec2 getProchainePosition(){
+    public Vec2 getProchainePosition(Environnement env){
         /*if(!env.getArene().estContennu(x,y)) return false;
         for (Forme f: env.getObstacles()) {
             if(f.estContennu(x, y)) return false;
@@ -18,7 +16,7 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
         return true;
 */
         Vec2 newPos = new Vec2();
-        Orc closest = this.env.getClosestOrc(orc);
+        Orc closest = env.getClosestOrc(orc);
 
         if (closest == null) {
             return newPos;
@@ -64,6 +62,4 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
         }
         return newPos;
     }
-
-
 }
