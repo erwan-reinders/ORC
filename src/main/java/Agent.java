@@ -1,44 +1,14 @@
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+public interface Agent {
+    /*Interface symbolisant un Agent*/
 
-public abstract class Agent {
-    /*Classe abstraite symbolisant un Agent*/
-    private Map<String, Action> actions;
+    //Fonction prendre decision
+    public void prendreDesision(Environnement env);
 
+    //Fonction permettant d'exécuter l'action
+    public abstract void executerDesision();
 
-    public Agent(){
-        this.actions = new LinkedHashMap<String, Action>();
-    }
-
-    protected abstract Action prendreDesision(Environnement env);
-
-    public void executerDesision(Environnement env) {
-        Action choix = prendreDesision(env);
-        if (choix != null && choix.estExecutable(this)) {
-            choix.executer(this);
-        }
-    }
-
-    public void addActions(Map<String, Action> actions){
-        this.actions.putAll(actions);
-    }
-
-    public void addAction(String name, Action action){
-        this.actions.put(name, action);
-    }
-
-    public void removeAction(String name){
-        actions.remove(name);
-    }
-
-    public Action getAction(String name) {
-        return actions.get(name);
-    }
-
-    public Map<String, Action> getActions() {
-        return actions;
-    }
+    //Méthode permettant à un Agent de renseigner ses actions (initialisation)
+    public abstract void remplirActions();
 
 }

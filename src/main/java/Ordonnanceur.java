@@ -45,12 +45,16 @@ public class Ordonnanceur implements Drawable{
         Orc o;
         while (it.hasNext()) {
             o = it.next();
-
-            o.executerDesision(env);
-
             if (!o.isAlive()) {
                 it.remove();
+            }else{
+                o.prendreDesision(env);
+
             }
+        }
+
+        for (Orc orc: env.getOrcs()) {
+            orc.executerDesision();
         }
     }
 

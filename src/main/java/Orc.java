@@ -1,11 +1,18 @@
 import java.awt.*;
 import static java.lang.Math.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class Orc extends Agent implements Drawable{
+public class Orc implements Agent, Drawable{
     /*Classe abstraite symbolisant un Orc*/
     //Idée : un orc est un agent de notre simulation, et va donc, en plus de posséder des caractéristiques
     // d'un agent, va également posséder des statistiques propres et qui vont varier d'un agent à un autre
-    
+
+
+	protected List<Action<Orc>> actions;
+	private Action<Orc> action_choix;
+
 	private double maxHealth;
 	private double health;
 	
@@ -14,105 +21,63 @@ public class Orc extends Agent implements Drawable{
 	private double size;
 
 	public Orc(double health, double maxHealth, double x, double y, double size) {
-		super();
+		actions = new ArrayList<Action<Orc>>();
+		action_choix = null;
+
 		this.health = health;
 		this.maxHealth = maxHealth;
 		this.x = x;
 		this.y = y;
 		this.size = size;
-
-		initActions();
 	}
 
-	private void initActions() {
-		addAction("avancer", new Action_Avancer());
-		addAction("attaquer", new Action_Attaquer());
+	/**============ ACTIONS DE AGENT ORC ============**/
+	public void prendreDesision(Environnement env){
+		Iterator<Action<Orc>> ite = this.actions.iterator();
+		while(ite.hasNext()){
+			Action<Orc> pa = ite.next();
+			if(pa.estExecutable(this)){
+				if((action_choix == null) || (action_choix != null && pa.getCout() < action_choix.getCout())){
+					action_choix = pa;
+				}
+			}
+		}
 	}
 
-	@Override
-	protected Action<Orc> prendreDesision(Environnement env) {
-		Action<Orc> choixFinal = null;
-
-		Orc closest = env.getClosestOrc(this);
-		if (closest == null) {
-			return null;
-		}
-		if (health < maxHealth*0.5) {
-			Action_Avancer choix = (Action_Avancer) getAction("avancer");
-			choix.setEnv(env);
-			double cX, cY;
-			cX = this.x - closest.x;
-			cY = this.y - closest.y;
-
-			double norm = Math.sqrt(getSqrDistanceTo(closest));
-			cX /= norm;
-			cY /= norm;
-
-			if (env.isIn(x + cX, y + cY)) {
-				choix.setPosDepX(cX);
-				choix.setPosDepY(cY);
-			} else {
-				choix.setPosDepX(0.0);
-				choix.setPosDepY(0.0);
-			}
-			choixFinal = choix;
-		}
-		else if (getSqrDistanceTo(closest) <= 4 * size * size) {
-			Action_Attaquer choix = (Action_Attaquer) getAction("attaquer");
-			choix.setEnv(env);
-			choix.setTarget(closest);
-			choixFinal = choix;
-		} else {
-			Action_Avancer choix = (Action_Avancer) getAction("avancer");
-			choix.setEnv(env);
-			double cX, cY;
-			cX = closest.x - this.x;
-			cY = closest.y - this.y;
-			if (isIn(closest)) {
-				cX = -cX;
-				cY = -cY;
-			}
-			else {
-				double norm = Math.sqrt(getSqrDistanceTo(closest));
-				cX /= norm;
-				cY /= norm;
-			}
-			if (env.isIn(x + cX, y + cY)) {
-				choix.setPosDepX(cX);
-				choix.setPosDepY(cY);
-			} else {
-				choix.setPosDepX(0.0);
-				choix.setPosDepY(0.0);
-			}
-			choixFinal = choix;
-		}
-
-		return choixFinal;
+	public void remplirActions(){
+		this.actions.add( new Action_Avancer());
+		this.actions.add( new Action_Attaquer());
 	}
 
+	public void executerDesision(){
+		if(action_choix != null){
+			action_choix.executer(this);
+		}
+	}
+
+	/**============ ACTIONS DE ORC ============**/
 	public void loseHealth(double amount) {
-		health = max(health - amount, 0);
+                health = max(health - amount, 0);
 	}
-        
-	public void addHealth(double amount) {
+
+	public void addHealth(int amount) {
 		health = min(maxHealth, health + amount);
 	}
 
-	public boolean isAlive() {
-		return (health > 0);
-	}
-
 	public void move(double vx, double vy) {
-		x += vx;
-		y += vy;
-	}
+            x += vx;
+            y += vy; 
+        }
 
+	//Pertinant de la mettre ici ?
 	public double getSqrDistanceTo(Orc o) {
 		double dx = o.x - this.x;
 		double dy = o.y - this.y;
 		return (dx*dx + dy*dy);
 	}
 
+
+	//Fonctions de dessin
 	public boolean isIn(Orc o) {
 		double dx = o.x - this.x;
 		double dy = o.y - this.y;
@@ -129,5 +94,25 @@ public class Orc extends Agent implements Drawable{
 		g2d.fillRect((int)(x-size*0.75), (int)(y-size*0.5-healthBarPos), (int)(size*1.5), 10);
 		g2d.setColor(new Color(100, 180, 60));
 		g2d.fillRect((int)(x-size*0.75), (int)(y-size*0.5-healthBarPos), (int)(size*1.5*(health/maxHealth)), healthBarPos);
+	}
+
+	//GETTERS ET SETTERS
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	//PREDICATS
+	public boolean isAlive() {
+		return (health > 0);
+	}
+
+	public boolean isAffraid(){return (health < maxHealth*.5);}
+
+	public boolean estAPorte(Orc o){
+		return this.getSqrDistanceTo(o) <= 4 * size * size;
 	}
 }

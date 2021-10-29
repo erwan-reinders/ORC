@@ -15,12 +15,20 @@ public class Action_Attaquer implements Action<Orc> {
     }
 
     public void executer(Orc o){
-        //Ici, on doit opérer un déplacement
+        //Ici, on doit opérer une attaque
         target.loseHealth(Math.random()*2);
     }
 
     public boolean estExecutable(Orc o){
-        return true;
+        //On va se demander si un orc o peut attaquer un orc target
+        if(target != null){
+            return o.estAPorte(target);
+        }
+        return false;
+    }
+
+    public int getCout(){
+        return 2;
     }
 
     public void setEnv(Environnement env) {

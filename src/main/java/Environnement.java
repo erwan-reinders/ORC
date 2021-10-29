@@ -43,6 +43,10 @@ public class Environnement implements Drawable{
     }
 
     public boolean isIn(double x, double y) {
+        //Est dans l'arène ?
+        //n'est pas dans un autre orc ?
+        //n'est pas dans un obstacle ?
+
         return arene.estContennu(x, y);
     }
 
@@ -70,5 +74,13 @@ public class Environnement implements Drawable{
             }
         }
         return null;
+    }
+
+    public Forme getArene() {
+        return arene;
+    }
+
+    public List<Forme> getObstacles() {
+        return obstacles;
     }
 }
