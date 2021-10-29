@@ -42,4 +42,10 @@ public class Vec2 {
     public double dot(Vec2 v) {
         return x * v.x + y * v.y;
     }
+
+    public void normalize() {
+        double len = length();
+        x /= len;
+        y /= len;
+    }
 }
