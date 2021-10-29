@@ -1,4 +1,4 @@
-import Math.Vec2;
+import MathClass.Vec2;
 
 public class SDD_Attaquer implements StrategieDeDeplacement {
     /*Classe modélisant une stratégie de déplacement basée sur l'attaque d'un adversaire*/

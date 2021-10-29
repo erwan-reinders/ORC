@@ -1,4 +1,4 @@
-import Math.Vec2;
+import MathClass.Vec2;
 
 public interface StrategieDeDeplacement {
     /*Interface modélisant une stratégie de déplacement*/
