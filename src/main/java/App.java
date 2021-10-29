@@ -10,17 +10,17 @@ public class App extends JFrame{
 
 	private Ordonnanceur o;
 
-	private void initApp() {
-		o = new Ordonnanceur(300, 300, 10);
-		tX = 50;
-		tY = 50;
+	private void initApp(int width, int height) {
+		o = new Ordonnanceur(width-200, height-200, 10);
+		tX = 100;
+		tY = 100;
 	}
 
-	public App(){
-		initApp();
+	public App(int width, int height){
+		initApp(width, height);
 
 	    setTitle("Orc");
-	    setSize(400, 400);
+	    setSize(width, height);
 	    setVisible(true);
 	    setResizable(false);
 	    setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -43,11 +43,11 @@ public class App extends JFrame{
 
 	public static void main(String[] args) throws InterruptedException {
 
-		App a = new App();
+		App a = new App(600, 600);
 
 		while (true) {
 			a.update();
-			Thread.sleep(32);
+			Thread.sleep(16);
 		}
 	}
 }

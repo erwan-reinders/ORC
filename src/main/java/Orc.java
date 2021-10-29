@@ -66,7 +66,7 @@ public class Orc implements Agent, Drawable{
 
 	public void move(double vx, double vy) {
             x += vx;
-            y += vy; 
+            y += vy;
         }
 
 	//Pertinant de la mettre ici ?
@@ -90,7 +90,7 @@ public class Orc implements Agent, Drawable{
 
 		int healthBarPos = 10;
 
-		g2d.setColor(new Color(210, 10, 20));
+		g2d.setColor(new Color(130, 10, 20));
 		g2d.fillRect((int)(x-size*0.75), (int)(y-size*0.5-healthBarPos), (int)(size*1.5), 10);
 		g2d.setColor(new Color(100, 180, 60));
 		g2d.fillRect((int)(x-size*0.75), (int)(y-size*0.5-healthBarPos), (int)(size*1.5*(health/maxHealth)), healthBarPos);
