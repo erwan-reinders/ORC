@@ -20,6 +20,9 @@ public class Orc implements Agent, Drawable{
 	private double x;
 	private double y;
 	private double size;
+	
+	private static int cpt = 0;
+	private int id;
 
 	public Orc(double health, double maxHealth, double x, double y, double size) {
 		stratDeplacement = new ArrayList<StrategieDeDeplacement>();
@@ -31,6 +34,9 @@ public class Orc implements Agent, Drawable{
 		this.x = x;
 		this.y = y;
 		this.size = size;
+		
+		id = cpt;
+		cpt++;
 	}
 
 	/**============ ACTIONS DE AGENT ORC ============**/
@@ -96,6 +102,12 @@ public class Orc implements Agent, Drawable{
 		g2d.fillRect((int)(x-size*0.75), (int)(y-size*0.5-healthBarPos), (int)(size*1.5), 10);
 		g2d.setColor(new Color(100, 180, 60));
 		g2d.fillRect((int)(x-size*0.75), (int)(y-size*0.5-healthBarPos), (int)(size*1.5*(health/maxHealth)), healthBarPos);
+		
+
+		if(KeyManager.getInstance().C_ENABLED) {
+			g2d.setColor(new Color(200, 200, 200));
+			g2d.drawString(Integer.toString(id), (int) (x-size*0.25), (int) (y+size*0.25));
+		}
 	}
 
 	//GETTERS ET SETTERS

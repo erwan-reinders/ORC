@@ -24,6 +24,7 @@ public class App extends JFrame{
 	    setVisible(true);
 	    setResizable(false);
 	    setDefaultCloseOperation(EXIT_ON_CLOSE);
+	    this.addKeyListener(KeyManager.getInstance());
 	}
 	
 	
