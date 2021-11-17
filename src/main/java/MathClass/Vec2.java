@@ -1,5 +1,6 @@
 package MathClass;
 
+
 public class Vec2 {
     public double x;
     public double y;
@@ -47,5 +48,56 @@ public class Vec2 {
         double len = length();
         x /= len;
         y /= len;
+    }
+
+    public boolean isNull(){
+        return x+y == 0.0;
+    }
+
+    public static double largeur(Vec2 v1,Vec2 v2){
+        return v1.x-v2.x;
+    }
+
+    public static double hauteur(Vec2 v1,Vec2 v2){
+        return v1.y-v2.y;
+    }
+
+    public static double getSqrDistanceTo(Vec2 v1,Vec2 v2) {
+        double dx = Vec2.largeur(v1,v2);
+        double dy = Vec2.hauteur(v1,v2);
+        return (dx*dx + dy*dy);
+    }
+
+    //Méthode permettant de récupérer le vecteur normalisé partant de v1 et oposé à v2
+    //Utile pour la SDD_Separation
+    public static Vec2 getOposite(Vec2 v1,Vec2 v2){
+        //v : vecteur v2->v1 en position v1
+        Vec2 v = new Vec2((v1.x-v2.x)*2, (v1.y-v2.y)*2);
+        System.out.println("GETOP : " + v);
+        v.normalize();
+        System.out.println("GETOPNORM : " + v);
+        return v;
+    }
+
+    public void multByScal(double d){
+        this.x *=d;
+        this.y *=d;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vec2 vec2 = (Vec2) o;
+        return Double.compare(vec2.x, x) == 0 &&
+                Double.compare(vec2.y, y) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Vec2{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 }

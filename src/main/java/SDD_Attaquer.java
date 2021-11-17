@@ -1,65 +1,87 @@
 import MathClass.Vec2;
 
+import java.util.Set;
+
 public class SDD_Attaquer implements StrategieDeDeplacement {
     /*Classe modélisant une stratégie de déplacement basée sur l'attaque d'un adversaire*/
     private Orc orc;
+    private Environnement env;
 
-    public SDD_Attaquer(Orc orc){
+    public int precision = 40;
+
+    public SDD_Attaquer(Orc orc, Environnement env){
         this.orc = orc;
+        this.env = env;
     }
 
-    public Vec2 getProchainePosition(Environnement env){
-        /*if(!env.getArene().estContennu(x,y)) return false;
-        for (Forme f: env.getObstacles()) {
-            if(f.estContennu(x, y)) return false;
-        }
-        return true;
-*/
+    public Vec2 getProchainePosition(){
         Vec2 newPos = new Vec2();
-        Orc closest = env.getClosestOrc(orc);
+        Orc closest = env.getClosestEnnemiOrc(orc);
+
+        //System.out.println("SDD ATTAQUER CLOSEST");
+        //System.out.println(closest);
 
         if (closest == null) {
             return newPos;
         }
-        if (!orc.isAffraid()) {
-            double cX, cY;
-            cX = orc.getX() - closest.getX();
-            cY = orc.getY() - closest.getY();
+        //On doit également MAJ la cible de l'attaque si attaque il y a
+        Action_Attaquer ao = (Action_Attaquer) orc.getAction("attaquer");
+        if(ao != null) {
+            //System.out.println("ON SET LA TARGET DATTAQUE");
+            ao.setTarget(closest);
+        }
 
-            double norm = Math.sqrt(orc.getSqrDistanceTo(closest));
-            cX /= norm;
-            cY /= norm;
-
-            if (env.isIn(orc.getX() + cX, orc.getY() + cY)) {
-                newPos.x = cX;
-                newPos.y = cY;
-            }
-        }/*
-        else if (orc.estAPorte(closest)) {
-            Action_Attaquer choix = (Action_Attaquer) getAction("attaquer");
-            choix.setEnv(env);
-            choix.setTarget(closest);
-            choixFinal = choix;
-        }*/ else {
-            /*Action_Avancer choix = (Action_Avancer) getAction("avancer");
-            choix.setEnv(env);*/
+        if (!orc.isAffraid() && !orc.estAPorte(closest)) {
             double cX, cY;
+            //Coordonnées du orc->closest
             cX = closest.getX() - orc.getX();
             cY = closest.getY() - orc.getY();
-            if (orc.isIn(closest)) {
-                cX = -cX;
-                cY = -cY;
-            }
-            else {
-                double norm = Math.sqrt(orc.getSqrDistanceTo(closest));
-                cX /= norm;
-                cY /= norm;
-            }
-            if (env.isIn(orc.getX() + cX, orc.getY() + cY)) {
-                newPos.x = cX;
-                newPos.y = cY;
+
+            /*double norm = Vec2.getSqrDistanceTo(orc.getPosition(),closest.getPosition());
+            cX /= norm;
+            cY /= norm;*/
+            Vec2 dep = new Vec2(cX,cY);
+            dep.normalize();
+
+            //System.out.println("nouveau CX : " + cX);
+            //System.out.println("nouveau CY : " + cY);
+            //System.out.println("normalize : " + dep);
+
+            if(env.isIn(orc.getX() + dep.x, orc.getY() + dep.y,orc)) {
+                newPos.x = dep.x;
+                newPos.y = dep.y;
             }
         }
+        //System.out.println("SDD ATTAQUER NOUVELLE POSITIONS : " + newPos);
         return newPos;
+    }
+
+    public boolean estTermine() {
+        //Si l'orc n'est pas effrayé
+        if(!orc.isAffraid()) {
+            //S'il n'y a plus d'ennemis dans la zone de l'orc
+            //Set<Element> els = orc.getCdv().getAllElementInCDV(precision);
+            Set<Element> els = orc.getCdv().getAllElementInCDV_triangles(precision);
+            for (Element el : els) {
+                if (el instanceof Orc) {
+                    if (!orc.getEquipe().isAllie(((Orc) el).getEquipe())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public StrategieDeDeplacement getProchaineStrategie(Environnement env) {
+        if(orc.isAffraid()){
+            return new SDD_Fuir(orc,env);
+        }else{
+            return new SDD_Exploration(orc,env);
+        }
+    }
+    @Override
+    public String toString() {
+        return "SDD_Attaquer{}";
     }
 }

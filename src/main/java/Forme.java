@@ -1,22 +1,53 @@
+import MathClass.Vec2;
+
+import java.awt.*;
 
 public abstract class Forme {
     /*classe abstraite modélisant une forme dans un espace 2D*/
-    private double width;
-    private double height;
+    private Vec2 center;
 
-    public Forme(double w, double h){
-        this.width = w;
-        this.height = h;
+    public Forme(Vec2 c){
+        this.center = c;
+    }
+
+    public Forme(){
+        this(new Vec2(0,0));
     }
 
     //Fonction permettant d'indiquer si la forme contient la position (x,y)
     public abstract boolean estContennu(double x, double y);
 
-    public double getWidth() {
-        return width;
+    public boolean estContennu(Vec2 p){
+        return estContennu(p.x,p.y);
     }
 
-    public double getHeight() {
-        return height;
+    //Fonction permettant d'obtenir la distance maximum que l'on peut parcourri dans la forme en question
+    public abstract double getMaxDistance();
+
+    //Fonction permettant de renseigner la largeur d'une forme
+    public abstract double getWidth();
+
+    //Fonction permettant de renseigner la hauteur d'une forme
+    public abstract double getHeight();
+
+    //Fonction permettant de grossir la forme
+    public abstract void grossir(double ratio);
+
+    public Vec2 getCenter() {
+        return center;
+    }
+
+    public void setCenter(Vec2 center) {
+        this.center = center;
+    }
+
+    //Fonction permettant d'indiquer comment dessiner une forme
+    public abstract void draw(boolean fill,Graphics2D g2d, Color ... colors);
+
+    @Override
+    public String toString() {
+        return "Forme{" +
+                "center=" + center +
+                '}';
     }
 }

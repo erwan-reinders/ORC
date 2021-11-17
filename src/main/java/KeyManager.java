@@ -14,9 +14,9 @@ public class KeyManager implements KeyListener {
     {   return INSTANCE;
     }
     
-    public boolean C_ENABLED;
+    public boolean C_ENABLED = true;
 
-	@Override
+
 	public void keyPressed(KeyEvent e) {
 		switch(e.getKeyCode()) {
 		case(KeyEvent.VK_C):
@@ -25,12 +25,12 @@ public class KeyManager implements KeyListener {
 		}
 	}
 
-	@Override
+
 	public void keyReleased(KeyEvent e) {
 				
 	}
 
-	@Override
+
 	public void keyTyped(KeyEvent e) {
 		
 	}
