@@ -5,18 +5,18 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class EquipeData<T extends Agent> implements Drawable {
+public class EquipeData<T extends Agent_Combat> implements Drawable {
     /*Classe modélisant les ressources partagées par une même équipe*/
     private List<EquipeData<T>> allies;
     private List<Trace> traces;
     private Color couleur;
     private TableauNoir<T> data_partagee;
 
-    static class TableauNoir<T> {
+    static class TableauNoir<T extends Agent_Combat> {
         /*Classe symbolisant un tableau noir, centralisant la connaissance des orcs, notament ceux en équipe*/
         private TreeSet<PaireT_int<T>> En_dejaVu;
 
-        static final int maxPrio = 3;
+        static final int maxPrio = 10;
 
         static class PaireT_int<T> implements Comparable<PaireT_int<T>>{
             T elem;
@@ -34,18 +34,39 @@ public class EquipeData<T extends Agent> implements Drawable {
             En_dejaVu = new TreeSet<PaireT_int<T>>();
         }
 
+        public void update(){
+            Iterator<PaireT_int<T>> it = En_dejaVu.iterator();
+            while(it.hasNext()){
+                PaireT_int<T> p = it.next();
+                //Si une entité de combat n'est plus en vie, elle est sortie de la liste des ennemis vus
+                if(!p.elem.isAlive()) it.remove();
+            }
+        }
+
         public void updatePrio(){
             Iterator<PaireT_int<T>> it = En_dejaVu.iterator();
             while(it.hasNext()){
                 PaireT_int<T> p = it.next();
+
+                //Si une entité de combat n'est plus en vie, elle est sortie de la liste des ennemis vus
+                if(!p.elem.isAlive()) p.prio = maxPrio;
                 p.prio++;
-                if(p.prio == maxPrio) En_dejaVu.remove(p);
+                if(p.prio == maxPrio) {
+                    System.out.println("SUPRESSION DE L'ELEMENT DE LA LISTE : " + p.elem);
+                    it.remove();
+                }
             }
         }
 
-        public boolean ajouterElemVu(T elem){
+        public T getFirstElem(){
+            return En_dejaVu.isEmpty()? null : En_dejaVu.first().elem;
+        }
+
+        public void ajouterElemVu(T elem){
             updatePrio();
-            return En_dejaVu.add(new PaireT_int<T>(elem,0));
+            PaireT_int<T> p = new PaireT_int<T>(elem,0);
+            System.out.println("J'AI VU L'ENNEMI : " + elem);
+            En_dejaVu.add(p);
         }
 
         public T getFirstPrio(){
@@ -88,7 +109,8 @@ public class EquipeData<T extends Agent> implements Drawable {
     }
 
     public void update(){
-        data_partagee.updatePrio();
+        data_partagee.update();
+
         Iterator<Trace> it = traces.iterator();
         while(it.hasNext()){
             Trace t = it.next();
@@ -100,6 +122,14 @@ public class EquipeData<T extends Agent> implements Drawable {
 
     public void ajouterEnnemiVu(T o){
         data_partagee.ajouterElemVu(o);
+    }
+
+    public boolean ennemiAAttaquer(){
+        return !data_partagee.En_dejaVu.isEmpty();
+    }
+
+    public T getACible(){
+        return data_partagee.getFirstElem();
     }
 
     public Color getCouleur() {

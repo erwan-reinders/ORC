@@ -1,6 +1,7 @@
 import MathClass.Vec2;
 
 import java.awt.*;
+import java.util.List;
 
 public abstract class Forme {
     /*classe abstraite modélisant une forme dans un espace 2D*/
@@ -43,6 +44,9 @@ public abstract class Forme {
 
     //Fonction permettant d'indiquer comment dessiner une forme
     public abstract void draw(boolean fill,Graphics2D g2d, Color ... colors);
+
+    //Fonction permettant d'indiquer pour une forme ses points clés
+    public abstract List<Vec2> getRepresentativePoint();
 
     @Override
     public String toString() {

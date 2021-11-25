@@ -1,4 +1,8 @@
+import MathClass.Vec2;
+
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Obstacle implements Element {
     /*Classe modélisant un obstacle*/
@@ -7,10 +11,10 @@ public class Obstacle implements Element {
     private double hauteur;
 
     public enum typeMateriaux{
-        PIERRE(1,-1,new Color(88,41,0,255),true),EAU(0,4,new Color(3,34,76,120),true),FEUILLAGE(.5,2, new Color(0,80,10,200),true);
+        PIERRE(1,-1,new Color(88,41,0,255),true),EAU(0,3,new Color(3,34,76,120),true),FEUILLAGE(.5,2, new Color(0,80,10,200),true);
         //CoefTrans : permet de définir ce vers quoi on peut voir à travers ou non [0,1]
         //CoefPassage : permet de définir le coefficient de ralentissement d'un individus qui doit passer par l'obstacle
-        //Négatif : intraverssable
+        //Négatif : intraversable
         private double coefTrans, coefPassage;
         private Color visuel;
         private boolean fill;
@@ -32,6 +36,10 @@ public class Obstacle implements Element {
 
         public boolean isFill() {
             return fill;
+        }
+
+        public boolean estTraversable(){
+            return coefPassage>=0;
         }
     }
 
@@ -63,6 +71,19 @@ public class Obstacle implements Element {
 
     public double getHauteur() {
         return hauteur;
+    }
+
+    public boolean peutVoirAuTravers(double h){
+        return h>hauteur;
+    }
+
+    public boolean peutPasserAuTravers(){
+        return materiel.estTraversable();
+    }
+
+
+    public List<Vec2> getRepresentativePoint(){
+        return aspect.getRepresentativePoint();
     }
 
     @Override

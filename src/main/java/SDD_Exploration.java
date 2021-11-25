@@ -12,6 +12,8 @@ public class SDD_Exploration implements StrategieDeDeplacement{
     private Orc orc;
     private Environnement env;
 
+    private Orc ennemi_vu;
+
     public int precision = 40;
     private List<Vec2> repetitions = new ArrayList<Vec2>();
 
@@ -22,9 +24,12 @@ public class SDD_Exploration implements StrategieDeDeplacement{
     }
 
     public Vec2 getProchainePosition() {
-        return rechercheParTriangle();
+        Vec2 res = rechercheParTriangleEtRange();
+        double r = env.getData().getRalentissement(orc.getPosition());
+        return new Vec2(res.x*r,res.y*r);
     }
 
+    /*Recherche de leur chemin par stratégie de cercles*/
     private Vec2 rechercheParCercles(){
         int rayon_precision = Orc.periode_trace;
 
@@ -114,6 +119,7 @@ public class SDD_Exploration implements StrategieDeDeplacement{
         return b_v2;
     }
 
+    /*Recherche de leur chemin par stratégie de triangles*/
     private Vec2 rechercheParTriangle(){
         //double aireMin_tri = precision;
         double el = 2*Math.PI;
@@ -185,6 +191,55 @@ public class SDD_Exploration implements StrategieDeDeplacement{
         return b_pos.size() == 0? new Vec2() : b_pos.get((int)(Math.random()*b_pos.size()));
     }
 
+    /*Recherche de leur chemin par stratégie de triangles et de cercles*/
+    private Vec2 rechercheParTriangleEtRange() {
+        Forme FOV_EXP = new Cercle(orc.getPosition(),(env.getData().getArene().getWidth()>env.getData().getArene().getWidth())? env.getData().getArene().getWidth()/2:env.getData().getArene().getHeight()/2);
+        double el = 2 * Math.PI;
+
+        double angVA = (precision * 2 - 1) / (double) (precision * 2) * el;
+        double angVB = 1 / (double) (precision * 2) * el;
+        Vec2 A = new Vec2(Math.cos(angVA), Math.sin(angVA));
+        Vec2 B = new Vec2(Math.cos(angVB), Math.sin(angVB));
+        A = new Vec2(env.getData().posMaxAtteinteParRayon_VecDir(orc.getPosition(), A,FOV_EXP));
+
+        double inc_angB = 2./(double) (precision * 2) * el;
+        double inc_angle = 1./ (double) precision * el;
+        double angle = 0;
+
+        double nb = 0;
+        double b_val = 1 + 1 / (env.getData().getArene().getHeight() * env.getData().getArene().getWidth() / 2);
+
+        List<Vec2> b_pos = new ArrayList<Vec2>();
+
+        while (nb < precision) {
+            Vec2 newp = new Vec2(Math.cos(angle), Math.sin(angle));
+            Vec2 npRes = new Vec2(newp.x + orc.getX(), newp.y + orc.getY());
+
+            if (env.isIn(npRes.x, npRes.y, orc)) {
+                B = new Vec2(env.getData().posMaxAtteinteParRayon_VecDir(orc.getPosition(), B,FOV_EXP));
+                Triangle t = new Triangle(new Vec2(A), new Vec2(B), new Vec2(orc.getPosition()));
+                double b_cur = ((double) orc.getEquipe().getNbTrace(t) / (1000 * orc.getEquipe().getNbTrace())) + ((t.getAire() == 0) ? 1 : 1 / (200 * t.getAire()));
+
+                if (b_cur < b_val) {
+                    b_val = b_cur;
+                    b_pos.clear();
+                    b_pos.add(new Vec2(newp));
+                } else {
+                    if (b_cur == b_val) {
+                        b_pos.add(new Vec2(newp));
+                    }
+                }
+            }
+            angle += inc_angle;
+            angVB +=inc_angB;
+
+            A = new Vec2(B);
+            B = new Vec2(Math.cos(angVB), Math.sin(angVB));
+            nb++;
+        }
+        return b_pos.size() == 0 ? new Vec2() : b_pos.get((int) (Math.random() * b_pos.size()));
+    }
+
     public boolean estTermine() {
         //Si l'orc rencontre au moins un adversaire, alors il doit changer de stratégie de jeu
         //Il n'explore plus
@@ -198,10 +253,18 @@ public class SDD_Exploration implements StrategieDeDeplacement{
             if(el instanceof Orc){
                 //System.out.println("            JE VOIS : " + el);
                 if(!orc.getEquipe().isAllie(((Orc)el).getEquipe())){
-                    //System.out.println("J'AI RENCONTRE UN ENNEMI : " + el);
+                    System.out.println("J'AI RENCONTRE UN ENNEMI : " + el);
+                    //MAJ des data equipes
+                    ennemi_vu = (Orc) el;
+                    orc.getEquipe().ajouterEnnemiVu((Orc)el);
                     return true;
                 }
             }
+        }
+        //S'il n'a pas d'ennemis dans son champs de vision, l'orc peut en avoir dans son equipe
+        if(orc.getEquipe().ennemiAAttaquer()){
+            ennemi_vu = orc.getEquipe().getACible();
+            return true;
         }
         return false;
     }
@@ -209,6 +272,7 @@ public class SDD_Exploration implements StrategieDeDeplacement{
     public StrategieDeDeplacement getProchaineStrategie(Environnement env) {
         SDD_Attaquer s = new SDD_Attaquer(orc,env);
         s.precision = precision;
+        s.setTarget(ennemi_vu);
         return s;
     }
 

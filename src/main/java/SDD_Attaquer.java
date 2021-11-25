@@ -7,6 +7,8 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
     private Orc orc;
     private Environnement env;
 
+    private Orc target;
+
     public int precision = 40;
 
     public SDD_Attaquer(Orc orc, Environnement env){
@@ -14,10 +16,17 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
         this.env = env;
     }
 
-    public Vec2 getProchainePosition(){
+    public Vec2 getProchainePosition() {
         Vec2 newPos = new Vec2();
-        Orc closest = env.getClosestEnnemiOrc(orc);
 
+        Orc closest;
+        if (target != null && target.isAlive()){
+            closest = target;
+        }else{
+            Orc plusProche = env.getClosestEnnemiOrc(orc);
+            closest = plusProche;
+            target = plusProche;
+        }
         //System.out.println("SDD ATTAQUER CLOSEST");
         //System.out.println(closest);
 
@@ -48,8 +57,9 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
             //System.out.println("normalize : " + dep);
 
             if(env.isIn(orc.getX() + dep.x, orc.getY() + dep.y,orc)) {
-                newPos.x = dep.x;
-                newPos.y = dep.y;
+                double r = env.getData().getRalentissement(orc.getPosition());
+                newPos.x = dep.x*r;
+                newPos.y = dep.y*r;
             }
         }
         //System.out.println("SDD ATTAQUER NOUVELLE POSITIONS : " + newPos);
@@ -80,6 +90,11 @@ public class SDD_Attaquer implements StrategieDeDeplacement {
             return new SDD_Exploration(orc,env);
         }
     }
+
+    public void setTarget(Orc target) {
+        this.target = target;
+    }
+
     @Override
     public String toString() {
         return "SDD_Attaquer{}";

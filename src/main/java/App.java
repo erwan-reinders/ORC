@@ -13,7 +13,11 @@ public class App extends JFrame{
 	private int tX = 100;
 	private int tY = 100;
 	private Ordonnanceur o;
-	private int nbOrc = 100;
+
+	private int nbOrc = 4;
+	private static int largeur_env = 500;
+	private static int hauteur_env = 500;
+
 
 	public static abstract class Panneau extends JPanel{
 		protected int tX;
@@ -172,7 +176,7 @@ public class App extends JFrame{
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		App a = new App(1000, 500);
+		App a = new App(App.largeur_env, App.hauteur_env);
 
 		while (!a.isFinish()) {
 			a.updateScene();
@@ -189,7 +193,7 @@ public class App extends JFrame{
 	//MECANIQUE DES OBSTACLES + VISION
 	//MECANIQUE DES OBSTACLES + VITESSE
 
-
+	//NOUVELLE SDD POUR LES DEP REJOINDRE ENNEMI
 
 	/*DEJA FAIT*/
 	//SOIT KEYMANAGER, SOIT RDioB

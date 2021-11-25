@@ -38,8 +38,9 @@ public class SDD_Fuir implements StrategieDeDeplacement{
             //System.out.println("CY : " + cY);
 
             if (env.isIn(orc.getX() + cX, orc.getY() + cY,orc)) {
-                newP.x = cX;
-                newP.y = cY;
+                double r = env.getData().getRalentissement(orc.getPosition());
+                newP.x = cX*r;
+                newP.y = cY*r;
             }
         }
         //System.out.println("SDD FUIR DEP : " + newP);

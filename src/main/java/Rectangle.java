@@ -1,6 +1,9 @@
 import MathClass.Vec2;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Rectangle extends Forme {
     private double width;
@@ -58,6 +61,12 @@ public class Rectangle extends Forme {
         }else{
             g2d.drawRect((int)pointHG.x, (int)pointHG.y, (int)this.width, (int)this.height);
         }
+    }
+
+
+    @Override
+    public List<Vec2> getRepresentativePoint() {
+        return new ArrayList<Vec2>(Arrays.asList(new Vec2(getCenter().x-width/2,getCenter().y-height/2),new Vec2(getCenter().x-width/2,getCenter().y+height/2),new Vec2(getCenter().x+width/2,getCenter().y-height/2), new Vec2(getCenter().x+width/2,getCenter().y+height/2)));
     }
 
     @Override

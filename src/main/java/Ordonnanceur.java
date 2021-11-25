@@ -1,4 +1,6 @@
 import MathClass.Vec2;
+
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,8 +16,19 @@ public class Ordonnanceur implements Drawable{
 
     /*Booléen d'affichage*/
     public boolean affichage_trace = true;
+    public boolean equipe_upd = false;
 
-    private List<EquipeData<Orc>> equipes;
+    class Pair_IEq<T extends Agent_Combat>{
+        int nb;
+        EquipeData<T> eq;
+
+        public Pair_IEq(int nb, EquipeData<T> eq) {
+            this.nb = nb;
+            this.eq = eq;
+        }
+    }
+
+    private List<Pair_IEq<Orc>> equipes;
 
     public Ordonnanceur(int width, int height, int nbOrcs) {
         this(width,height,nbOrcs,Color.BLACK);
@@ -23,13 +36,26 @@ public class Ordonnanceur implements Drawable{
 
     public Ordonnanceur(int width, int height, int nbOrcs, Color bgC) {
         env = new Environnement(new EnvironnementData(new Rectangle(0, 0, width, height), bgC));
-        this.equipes = new ArrayList<EquipeData<Orc>>();
+        this.equipes = new ArrayList<Pair_IEq<Orc>>();
 
-        equipes.add(new EquipeData<Orc>(new Color(255,0,0)));
-        equipes.add(new EquipeData<Orc>(new Color(0,0,255)));
+        //scenario_classique(nbOrcs);
+        scenario_obstacle(nbOrcs);
+    }
+
+    private void scenario_classique(int nbOrcs){
+        equipes.add(new Pair_IEq<Orc>(0,new EquipeData<Orc>(new Color(255,0,0))));
+        equipes.add(new Pair_IEq<Orc>(0,new EquipeData<Orc>(new Color(0,0,255))));
 
         addOrcCircle(nbOrcs/2);
         addOrcRandom(nbOrcs/2);
+    }
+
+    private void scenario_obstacle(int nbOrcs){
+        equipes.add(new Pair_IEq<Orc>(0,new EquipeData<Orc>(new Color(255,0,0))));
+        equipes.add(new Pair_IEq<Orc>(0,new EquipeData<Orc>(new Color(0,0,255))));
+
+        env.getData().ajouterObstacles(new Obstacle(Obstacle.typeMateriaux.PIERRE,new Rectangle(0,10,100,10)),new Obstacle(Obstacle.typeMateriaux.PIERRE,new Rectangle(90,10,10,100)),new Obstacle(Obstacle.typeMateriaux.EAU,new Cercle(50,60,40)),new Obstacle(Obstacle.typeMateriaux.PIERRE,new Rectangle(100,100,100,10)));
+        addOrcRandom(nbOrcs);
     }
 
     private void addOrcRandom(int nbOrcs) {
@@ -38,9 +64,11 @@ public class Ordonnanceur implements Drawable{
             int size = health/8;
             double x = size + Math.random() * (env.getData().getArene().getWidth()-size*2);
             double y = size + Math.random() * (env.getData().getArene().getHeight()-size*2);
-            Orc o = new Orc(health, health, x,y, size, equipes.get(i%equipes.size()),null,1);
+            Orc o = new Orc(health, health, x,y, size, equipes.get(i%equipes.size()).eq,null,1);
             env.addOrc(o);
             o.setCdv(this.env,new Cercle(o.getPosition(),o.getRange()*3));
+
+            equipes.get(i%equipes.size()).nb++;
         }
     }
 
@@ -53,18 +81,20 @@ public class Ordonnanceur implements Drawable{
             double x = env.getData().getArene().getWidth()*0.5 + Math.cos(angle)*env.getData().getArene().getWidth()*0.2;
             double y = env.getData().getArene().getHeight()*0.5 + Math.sin(angle)*env.getData().getArene().getHeight()*0.2;
 
-            Orc o = new Orc(health, health, x,y, size, equipes.get(i%equipes.size()),null,1);
+            Orc o = new Orc(health, health, x,y, size, equipes.get(i%equipes.size()).eq,null,1);
             env.addOrc(o);
             o.setCdv(this.env,new Cercle(o.getPosition(),o.getRange()*3));
 
             angle += increment;
+
+            equipes.get(i%equipes.size()).nb++;
         }
     }
 
     public void update() {
         //On update dans un premier temps les equipes (gestion des traces)
-        for (EquipeData<Orc> e: equipes) {
-            e.update();
+        for (Pair_IEq<Orc> p: equipes) {
+            p.eq.update();
         }
 
         Iterator<Orc> it = env.getOrcs().iterator();
@@ -72,8 +102,20 @@ public class Ordonnanceur implements Drawable{
         while (it.hasNext()) {
             //System.out.println("==================================== NOUVEL ORC ====================================");
             o = it.next();
-            //System.out.println(o);
+            System.out.println(o);
+            //Si l'orc n'est plus vivant
             if (!o.isAlive()) {
+                //On va update les compteurs de l'equipe de l'orc mort
+                Iterator<Pair_IEq<Orc>> it_eq = equipes.iterator();
+                while (it_eq.hasNext()){
+                    Pair_IEq<Orc> p = (Pair_IEq<Orc>)it_eq.next();
+                    if(p.eq == o.getEquipe()){
+                        p.nb--;
+                        if(p.nb == 0) it_eq.remove();
+                        equipe_upd = true;
+                        break;
+                    }
+                }
                 it.remove();
             }else{
                 //On va d'abord voir pour MAJ strat deplacement de l'orc
@@ -95,9 +137,21 @@ public class Ordonnanceur implements Drawable{
     }
 
     public boolean isFinished() {
-        return env.getOrcs().size() < 2;
+        //Si au moins un orc est mort le tour précédent
+        if(equipe_upd) {
+            equipe_upd = false;
+            Pair_IEq<Orc> p_eq = equipes.get(0);
+            for (int i = 1; i<equipes.size();i++) {
+                //Si présence d'au moins deux equipes non alliées dans la partie
+                if(!equipes.get(i).eq.isAllie(p_eq.eq)) return false;
+            }
+            equipe_upd = true;
+            return true;
+        }
+        return false;
     }
 
+    //MAJ des primitives d'affichage
     public void upAffichage_fov(){
         for (Orc o:env.getOrcs()) {
             o.afficher_fov = !o.afficher_fov;
@@ -113,9 +167,9 @@ public class Ordonnanceur implements Drawable{
     public void draw(Graphics2D g2d) {
         env.getData().draw(g2d);
         if(affichage_trace) {
-            for (EquipeData<Orc> eq : equipes) {
+            for (Pair_IEq<Orc> eq : equipes) {
                 //System.out.println("========================================================DESSIN DE : " + eq);
-                eq.draw(g2d);
+                eq.eq.draw(g2d);
             }
         }else{
             //System.out.println("========================================================PEUT PAS DESSINER LES EQUIPES");

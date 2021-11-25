@@ -12,9 +12,13 @@ public class EnvironnementData implements Drawable{
     private List<Obstacle> obstacles;
     private Color BGColor = new Color(0,0,0);
 
+    VisibilityGraph vg;
+
     public EnvironnementData(Forme arene) {
         this.arene = arene;
         this.obstacles = new ArrayList<Obstacle>();
+
+        this.vg = new VisibilityGraph();
     }
 
     public EnvironnementData(Forme arene, Color bg) {
@@ -28,6 +32,7 @@ public class EnvironnementData implements Drawable{
     }
 
     public void ajouterObstacles(Obstacle ... obs){
+        vg.addObstacles(obs);
         obstacles.addAll(Arrays.asList(obs));
     }
 
@@ -40,7 +45,7 @@ public class EnvironnementData implements Drawable{
 
     public boolean isIn(double x, double y) {
         for(Obstacle o : obstacles){
-            if(o.estContennu(x,y)) {
+            if(!o.peutPasserAuTravers() && o.estContennu(x,y)) {
                 System.out.println(x+","+y + " DEDANS UN OBSTACLE : " + o);
                 return false;
             }
@@ -51,9 +56,20 @@ public class EnvironnementData implements Drawable{
     public Element elIsIn(double x, double y){
         //Méthode pour la SDD_Separation
         for(Obstacle o :obstacles){
-            if(o.estContennu(x,y)) return o;
+            if(!o.peutPasserAuTravers() && o.estContennu(x,y)) return o;
         }
         return null;
+    }
+
+    public double getRalentissement(Vec2 pos){
+        double ralentissement = 1.;
+        int deno = 1;
+        for (Obstacle o:obstacles) {
+            if(o.peutPasserAuTravers() && o.estContennu(pos.x,pos.y)){
+                deno+=o.getMateriel().getCoefPassage();
+            }
+        }
+        return ralentissement/deno;
     }
 
     public Vec2 posMaxAtteinteParRayon(Vec2 depart, Vec2 arrive){

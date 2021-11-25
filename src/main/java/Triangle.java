@@ -1,6 +1,10 @@
 import MathClass.Vec2;
 
+
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Triangle extends Forme {
 
@@ -97,6 +101,11 @@ public class Triangle extends Forme {
         }else{
             g2d.drawPolygon(new int[]{(int)A.x,(int)B.x,(int)C.x},new int[]{(int)A.y,(int)B.y,(int)C.y},3);
         }
+    }
+
+    @Override
+    public List<Vec2> getRepresentativePoint() {
+        return new ArrayList<Vec2>(Arrays.asList(A,B,C));
     }
 
     @Override
